@@ -138,8 +138,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 
-%dir %{_libdir}/bluetooth
-%dir %{_libdir}/bluetooth/plugins
+#%dir %{_libdir}/bluetooth
+#%dir %{_libdir}/bluetooth/plugins
 %dir %{_sysconfdir}/bluetooth
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/audio.conf
