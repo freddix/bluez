@@ -3,7 +3,7 @@
 Summary:	Bluetooth protocol stack for Linux
 Name:		bluez
 Version:	4.101
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
@@ -15,13 +15,14 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	dbus-glib-devel
 %if %{with gstreamer}
-BuildRequires:	gstreamer-plugins-base-devel
+BuildRequires:	gstreamer010-plugins-base-devel
 %endif
 BuildRequires:	libnl-devel
 BuildRequires:	libsndfile-devel
 BuildRequires:	libtool
 BuildRequires:	libusbx-devel
 BuildRequires:	pkg-config
+Requires(post,preun,postun):	systemd-units
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	udev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -128,6 +129,15 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/gstreamer*/libgstbluetooth.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+%systemd_post bluetooth.service
+
+%preun
+%systemd_preun bluetooth.service
+
+%postun
+%systemd_postun
 
 %post	libs -p /usr/sbin/ldconfig
 %postun	libs -p /usr/sbin/ldconfig
