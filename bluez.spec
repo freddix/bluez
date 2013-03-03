@@ -1,27 +1,21 @@
-%bcond_without	gstreamer
-
 Summary:	Bluetooth protocol stack for Linux
 Name:		bluez
-Version:	4.101
-Release:	2
+Version:	5.3
+Release:	1
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-# Source0-md5:	fb42cb7038c380eb0e2fa208987c96ad
+# Source0-md5:	44de20f6422bf90a01b8df48e7dfe4ed
 URL:		http://www.bluez.org/
-BuildRequires:	alsa-lib-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	bison
 BuildRequires:	dbus-glib-devel
-%if %{with gstreamer}
-BuildRequires:	gstreamer010-plugins-base-devel
-%endif
 BuildRequires:	libnl-devel
 BuildRequires:	libsndfile-devel
 BuildRequires:	libtool
 BuildRequires:	libusbx-devel
 BuildRequires:	pkg-config
+BuildRequires:	systemd-devel
 Requires(post,preun,postun):	systemd-units
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	udev
@@ -35,14 +29,6 @@ Bluetooth protocol stack for Linux.
 
 The BLUETOOTH trademarks are owned by Bluetooth SIG, Inc., U.S.A.
 
-%package -n alsa-plugins-bluez
-Summary:	ALSA plugins for Bluetooth audio devices
-Group:		Libraries
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-
-%description -n alsa-plugins-bluez
-ALSA plugins for Bluetooth audio devices.
-
 %package -n cups-backend-bluez
 Summary:	Bluetooth backend for CUPS
 Group:		Applications/Printing
@@ -51,14 +37,6 @@ Requires:	cups
 
 %description -n cups-backend-bluez
 Bluetooth backend for CUPS.
-
-%package -n gstreamer-bluez
-Summary:	Bluetooth support for gstreamer
-Group:		Libraries
-Requires:	bluez-libs >= %{epoch}:%{version}-%{release}
-
-%description -n gstreamer-bluez
-Bluetooth support for gstreamer.
 
 %package libs
 Summary:	Bluetooth libraries
@@ -88,44 +66,25 @@ applications.
 %configure \
 	--disable-silent-rules	\
 	--disable-test		\
-	--enable-alsa		\
-	--enable-audio		\
-	--enable-bccmd		\
-	--enable-configfiles	\
 	--enable-cups		\
-	--enable-dfutool	\
-	--enable-dund		\
-%if %{with gstreamer}
-	--enable-gstreamer	\
-%endif
-	--enable-hidd		\
-	--enable-input		\
-	--enable-network	\
-	--enable-pand		\
-	--enable-serial		\
-	--enable-shared		\
+	--enable-library	\
 	--enable-tools		\
-	--enable-usb		\
-	--with-systemdunitdir=%{systemdunitdir}
+	--enable-usb
 %{__make} \
 	cupsdir=%{cupsdir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/alsa/pcm
+install -d $RPM_BUILD_ROOT{%{_libdir}/bluetooth/plugins,%{_sysconfdir}/bluetooth}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	cupsdir=%{cupsdir}
 
-install audio/bluetooth.conf $RPM_BUILD_ROOT/etc/alsa/pcm/bluetooth.conf
-install audio/audio.conf $RPM_BUILD_ROOT/etc/bluetooth
-install input/input.conf $RPM_BUILD_ROOT/etc/bluetooth
-install network/network.conf $RPM_BUILD_ROOT/etc/bluetooth
-
-rm -f $RPM_BUILD_ROOT%{_libdir}/alsa-lib/*.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/bluetooth/plugins/*.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/gstreamer*/libgstbluetooth.la
+install profiles/audio/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
+install profiles/input/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
+install profiles/network/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
+install profiles/proximity/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -145,40 +104,46 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog README
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_bindir}/bccmd
+%attr(755,root,root) %{_bindir}/bluetoothctl
+%attr(755,root,root) %{_bindir}/btmon
+%attr(755,root,root) %{_bindir}/ciptool
+%attr(755,root,root) %{_bindir}/hciattach
+%attr(755,root,root) %{_bindir}/hciconfig
+%attr(755,root,root) %{_bindir}/hcidump
+%attr(755,root,root) %{_bindir}/hcitool
+%attr(755,root,root) %{_bindir}/l2ping
+%attr(755,root,root) %{_bindir}/l2test
+%attr(755,root,root) %{_bindir}/rctest
+%attr(755,root,root) %{_bindir}/rfcomm
+%attr(755,root,root) %{_bindir}/sdptool
 
-#%dir %{_libdir}/bluetooth
-#%dir %{_libdir}/bluetooth/plugins
+%dir %{_libdir}/bluetooth
+%attr(755,root,root) %{_libdir}/bluetooth/bluetoothd
+%attr(755,root,root) %{_libdir}/bluetooth/obexd
+
+%dir %{_libdir}/bluetooth/plugins
+
 %dir %{_sysconfdir}/bluetooth
-
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/proximity.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/audio.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/input.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/main.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/network.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/rfcomm.conf
 %config(noreplace) %verify(not md5 mtime size) /etc/dbus-1/system.d/bluetooth.conf
 
 %{systemdunitdir}/bluetooth.service
+%{_prefix}/lib/systemd/user/obex.service
+%{_datadir}/dbus-1/services/org.bluez.obex.service
 %{_datadir}/dbus-1/system-services/org.bluez.service
 
-%{_mandir}/man[18]/*
+%attr(755,root,root) %{_prefix}/lib/udev/hid2hci
+%{_prefix}/lib/udev/rules.d/97-hid2hci.rules
 
-%files -n alsa-plugins-bluez
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/alsa-lib/libasound_module_ctl_bluetooth.so
-%attr(755,root,root) %{_libdir}/alsa-lib/libasound_module_pcm_bluetooth.so
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/alsa/pcm/bluetooth.conf
+%{_mandir}/man[18]/*
 
 %files -n cups-backend-bluez
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_prefix}/lib/cups/backend/bluetooth
-
-%if %{with gstreamer}
-%files -n gstreamer-bluez
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/gstreamer*/libgstbluetooth.so
-%endif
 
 %files libs
 %defattr(644,root,root,755)
