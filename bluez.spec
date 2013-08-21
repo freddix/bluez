@@ -1,11 +1,11 @@
 Summary:	Bluetooth protocol stack for Linux
 Name:		bluez
-Version:	5.7
+Version:	5.8
 Release:	1
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-# Source0-md5:	ce0ef43938e8bfc230f3f06d6ad02d7e
+# Source0-md5:	74b271f211688b68ecd64bed9740f419
 URL:		http://www.bluez.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -81,7 +81,6 @@ install -d $RPM_BUILD_ROOT{%{_libdir}/bluetooth/plugins,%{_sysconfdir}/bluetooth
 	DESTDIR=$RPM_BUILD_ROOT \
 	cupsdir=%{cupsdir}
 
-install profiles/audio/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
 install profiles/input/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
 install profiles/network/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
 install profiles/proximity/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
@@ -126,7 +125,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{_sysconfdir}/bluetooth
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/proximity.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/audio.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/input.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/network.conf
 %config(noreplace) %verify(not md5 mtime size) /etc/dbus-1/system.d/bluetooth.conf
