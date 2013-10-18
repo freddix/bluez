@@ -1,11 +1,11 @@
 Summary:	Bluetooth protocol stack for Linux
 Name:		bluez
-Version:	5.9
+Version:	5.10
 Release:	1
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-# Source0-md5:	47b65bed6a9430678bf8bf1e1079212d
+# Source0-md5:	9bcc1d81e392e5be27fb11b1aad71abe
 URL:		http://www.bluez.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
