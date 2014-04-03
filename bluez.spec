@@ -1,11 +1,11 @@
 Summary:	Bluetooth protocol stack for Linux
 Name:		bluez
-Version:	5.16
+Version:	5.17
 Release:	1
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-# Source0-md5:	622a465571362ffd40514c38baa08ccf
+# Source0-md5:	cca433b6d3a6f7a64a1f304dc889f71e
 URL:		http://www.bluez.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -80,6 +80,8 @@ install -d $RPM_BUILD_ROOT{%{_libdir}/bluetooth/plugins,%{_sysconfdir}/bluetooth
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	cupsdir=%{cupsdir}
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
 install profiles/input/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
 install profiles/network/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
