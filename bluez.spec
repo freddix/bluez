@@ -1,21 +1,23 @@
 Summary:	Bluetooth protocol stack for Linux
 Name:		bluez
-Version:	5.18
+Version:	5.24
 Release:	1
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-# Source0-md5:	343736b5e39a5bc57720f8a4cfee9ed6
+# Source0-md5:	42d0db236cb25c97697b37ecde0af648
 URL:		http://www.bluez.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	dbus-glib-devel
+BuildRequires:	libical-devel
 BuildRequires:	libnl-devel
 BuildRequires:	libsndfile-devel
 BuildRequires:	libtool
-BuildRequires:	libusbx-devel
+BuildRequires:	libusb-devel
 BuildRequires:	pkg-config
 BuildRequires:	systemd-devel
+BuildRequires:	udev-devel
 Requires(post,preun,postun):	systemd-units
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	udev
@@ -66,12 +68,10 @@ applications.
 %configure \
 	--disable-silent-rules	\
 	--disable-test		\
-	--enable-cups		\
+	--enable-experimental	\
 	--enable-library	\
-	--enable-tools		\
-	--enable-usb
-%{__make} \
-	cupsdir=%{cupsdir}
+	--enable-sixaxis
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -81,7 +81,7 @@ install -d $RPM_BUILD_ROOT{%{_libdir}/bluetooth/plugins,%{_sysconfdir}/bluetooth
 	DESTDIR=$RPM_BUILD_ROOT \
 	cupsdir=%{cupsdir}
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/{,*/*/}*.la
 
 install profiles/input/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
 install profiles/network/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/bluetooth
@@ -116,6 +116,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/hcitool
 %attr(755,root,root) %{_bindir}/l2ping
 %attr(755,root,root) %{_bindir}/l2test
+%attr(755,root,root) %{_bindir}/mcaptest
+%attr(755,root,root) %{_bindir}/mpris-proxy
 %attr(755,root,root) %{_bindir}/rctest
 %attr(755,root,root) %{_bindir}/rfcomm
 %attr(755,root,root) %{_bindir}/sdptool
@@ -125,6 +127,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/bluetooth/obexd
 
 %dir %{_libdir}/bluetooth/plugins
+%attr(755,root,root) %{_libdir}/bluetooth/plugins/sixaxis.so
 
 %dir %{_sysconfdir}/bluetooth
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bluetooth/proximity.conf
