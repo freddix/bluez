@@ -1,11 +1,11 @@
 Summary:	Bluetooth protocol stack for Linux
 Name:		bluez
-Version:	5.26
+Version:	5.28
 Release:	1
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-# Source0-md5:	a8043b6ccac8fd0c1ddc8d16c1a65279
+# Source0-md5:	b2532e89a7c829b62ca25f041b3df3cd
 URL:		http://www.bluez.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -114,9 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/hciconfig
 %attr(755,root,root) %{_bindir}/hcidump
 %attr(755,root,root) %{_bindir}/hcitool
+%attr(755,root,root) %{_bindir}/hex2hcd
 %attr(755,root,root) %{_bindir}/l2ping
 %attr(755,root,root) %{_bindir}/l2test
-%attr(755,root,root) %{_bindir}/mcaptest
 %attr(755,root,root) %{_bindir}/mpris-proxy
 %attr(755,root,root) %{_bindir}/rctest
 %attr(755,root,root) %{_bindir}/rfcomm
