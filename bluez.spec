@@ -1,11 +1,11 @@
 Summary:	Bluetooth protocol stack for Linux
 Name:		bluez
-Version:	5.28
+Version:	5.29
 Release:	1
 License:	GPL v2+
 Group:		Applications/System
 Source0:	http://www.kernel.org/pub/linux/bluetooth/%{name}-%{version}.tar.gz
-# Source0-md5:	b2532e89a7c829b62ca25f041b3df3cd
+# Source0-md5:	8c3fdc351aed8ca558e2d93a7d97dd87
 URL:		http://www.bluez.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
